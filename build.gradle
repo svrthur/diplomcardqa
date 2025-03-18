@@ -1,19 +1,53 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.11.2'
+    id "io.freefair.lombok" version "8.2.2"
+
 }
 
 group = 'ru.netology'
 version = '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+sourceCompatibility = 11
+// кодировка файлов (если используете русский язык в файлах)
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+allure {
+    version = '2.20.1'
+    useJUnit5 {
+        version = '2.20.1'
+    }
 }
 
+repositories {
+    mavenCentral()
+
+}
+
+
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+    // библиотека com.codeborne:selenide используется при построении проекта с использованием Selenide
+    testImplementation 'com.codeborne:selenide:6.17.2'
+    testImplementation 'io.qameta.allure:allure-selenide:2.27.0'
+    testImplementation 'com.mysql:mysql-connector-j:8.4.0'
+    testImplementation 'commons-dbutils:commons-dbutils:1.8.1'
+    testImplementation 'org.postgresql:postgresql:42.2.27'
+    testImplementation 'io.rest-assured:rest-assured:4.3.0'
+    testImplementation 'com.google.code.gson:gson:2.10.1'
 }
 
 test {
     useJUnitPlatform()
+    systemProperty 'selenide.headless', System.getProperty('selenide.headless')
+    systemProperty 'chromeoptions.prefs', System.getProperty('chromeoptions.prefs', "profile.password_manager_leak_detection=false")
+    systemProperty 'file.encoding', 'UTF-8'
+    systemProperty 'db.url', System.getProperty('db.url', 'jdbc:mysql://localhost:3306/app')
+    systemProperty 'app.url', System.getProperty('app.url','http://localhost')
+    systemProperty 'app.port', System.getProperty('app.port','8080')
+    systemProperty 'app.user', System.getProperty('app.user','app')
+    systemProperty 'app.password', System.getProperty('app.password','pass')
+
 }
